@@ -19,7 +19,7 @@ function Header() {
         </div>
 
         <div className="header__option">
-          <Link className="link" to="/kurkan-shop">
+          <Link className="link" to="/kurkan-store">
             <h1>Magazin</h1>
           </Link>
         </div>
