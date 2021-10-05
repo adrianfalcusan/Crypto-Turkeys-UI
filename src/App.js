@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Header from "../src/Components/Header/Header";
 import Home from "./Pages/Home";
 import Web3 from "web3";
+import MyKurkeys from "./Pages/MyKurkeys";
 
 export class App extends Component {
   async UNSAFE_componentWillMount() {
@@ -30,7 +31,11 @@ export class App extends Component {
           <div className="app__body">
             <Switch>
               <Route path="/" exact component={() => <Home />} />
-              <Route path="/home" exact component={() => <Home />} />
+              <Route
+                path="/kurkaniimei"
+                exact
+                component={() => <MyKurkeys />}
+              />
               <Route path="/kurkaan" exact component={() => <Card id="1" />} />
             </Switch>
           </div>

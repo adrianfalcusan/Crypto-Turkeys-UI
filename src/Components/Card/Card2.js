@@ -7,41 +7,35 @@ const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
 
 function Card2(props) {
   const [account, setAccount] = useState();
-  const { turkeys, loading, owner } = props;
+  const { turkeys, loading } = props;
 
   useEffect(() => {
     getAccount();
   }, []);
 
   const getAccount = async () => {
-    const marketplace = new web3.eth.Contract(
-      MARKETPLACE_ABI,
-      MARKETPLACE_ADDRESS
-    );
     const accounts = await web3.eth.getAccounts();
-    const getListing = await marketplace.methods.getListing(0).call();
-    console.log(getListing.token);
     setAccount(accounts[0]);
   };
 
-  const createListing = async () => {
+  const createListing = async turkeyId => {
     const marketplace = new web3.eth.Contract(
       MARKETPLACE_ABI,
       MARKETPLACE_ADDRESS
     );
     await marketplace.methods
-      .createListing(MARKETPLACE_ADDRESS, 1, "100000000000000000")
+      .createListing(MARKETPLACE_ADDRESS, turkeyId, "1000000000000000000")
       .send({ from: account });
   };
 
-  const purchaseToken = async () => {
+  const purchaseToken = async turkeyId => {
     const marketplace = new web3.eth.Contract(
       MARKETPLACE_ABI,
       MARKETPLACE_ADDRESS
     );
     await marketplace.methods
-      .purchase(0)
-      .send({ from: account, value: 100000000000000000 });
+      .purchase(turkeyId)
+      .send({ from: account, value: 1000000000000000000 });
   };
 
   return (
@@ -51,7 +45,7 @@ function Card2(props) {
       ) : (
         <ul className="big-container">
           {turkeys.map(turkey => (
-            <div className="flip-card">
+            <div key={turkey.id} className="flip-card">
               <div className="flip-card-inner">
                 <div className="flip-card-front">
                   <div className="front-card-header">
@@ -62,13 +56,20 @@ function Card2(props) {
                   </div>
                 </div>
                 <div className="flip-card-back">
-                  {owner === account ? (
+                  {turkey.owner === account ? (
                     <div>
                       <div className="nft-details">
                         <h1>{turkey.name}</h1>
                         <h4>{turkey.dna}</h4>
                         <img src={turkeyImage} alt=""></img>
-                        <h4>You're the owner</h4>
+                        <button
+                          onClick={() => {
+                            console.log(turkey);
+                            createListing(turkey.id);
+                          }}
+                        >
+                          Sell for 1ETH
+                        </button>
                       </div>
                     </div>
                   ) : (
@@ -77,7 +78,14 @@ function Card2(props) {
                         <h1>{turkey.name}</h1>
                         <h4>{turkey.dna}</h4>
                         <img src={turkeyImage} alt=""></img>
-                        <h4>Dumbest turkey</h4>
+                        <button
+                          onClick={() => {
+                            console.log(turkey);
+                            purchaseToken(turkey.id);
+                          }}
+                        >
+                          Buy
+                        </button>
                       </div>
                     </div>
                   )}
