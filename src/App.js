@@ -6,6 +6,7 @@ import Header from "../src/Components/Header/Header";
 import Home from "./Pages/Home";
 import Web3 from "web3";
 import MyKurkeys from "./Pages/MyKurkeys";
+import CurcanStore from "./Pages/CurcanStore";
 
 export class App extends Component {
   async UNSAFE_componentWillMount() {
@@ -37,6 +38,11 @@ export class App extends Component {
                 component={() => <MyKurkeys />}
               />
               <Route path="/kurkaan" exact component={() => <Card id="1" />} />
+              <Route
+                path="/kurkan-store"
+                exact
+                component={() => <CurcanStore />}
+              />
             </Switch>
           </div>
         </Router>
