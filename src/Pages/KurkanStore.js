@@ -5,16 +5,17 @@ import { MARKETPLACE_ABI, MARKETPLACE_ADDRESS } from "../config";
 import Card2 from "../Components/Card/Card2";
 const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
 
-function MyKurkeys() {
+function KurkanStore() {
   const [turkeys, setTurkeys] = useState([]);
   const [loading, setLoading] = useState(true);
   const [account, setAccount] = useState();
-  const [test, setTest] = useState(true);
 
   useEffect(async () => {
     await getAccount();
-    fetchTurkeys();
   }, [account]);
+  useEffect(async () => {
+    fetchTurkeys();
+  }, []);
 
   const getAccount = async () => {
     const accounts = await web3.eth.getAccounts();
@@ -26,18 +27,18 @@ function MyKurkeys() {
       MARKETPLACE_ABI,
       MARKETPLACE_ADDRESS
     );
-
-    let turkeysLength = await marketplace.methods.turkeysLength().call();
+    let listingsLength = await marketplace.methods.listingsLength().call();
+    console.log(listingsLength);
     let kurkans = [];
-    for (var i = 0; i < turkeysLength; i++) {
-      const turkey = await marketplace.methods.turkeys(i).call();
-      console.log("owner", turkey.owner, "account", account);
-
-      if (turkey.owner === account) {
+    let listing = [];
+    let token;
+    for (var i = 0; i < listingsLength; i++) {
+      listing = await marketplace.methods.listings(i).call();
+      token = listing.token;
+      if (listing.status == 1) {
+        const turkey = await marketplace.methods.turkeys(token).call();
         kurkans.push(turkey);
-        console.log("yep");
-      } else {
-        console.log("nope");
+        setTurkeys(kurkans);
       }
     }
 
@@ -52,4 +53,4 @@ function MyKurkeys() {
   );
 }
 
-export default MyKurkeys;
+export default KurkanStore;
